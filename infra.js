@@ -1,10 +1,8 @@
 import { UTM } from '/vendor/akiyatkin/utm/UTM.js'
-import { Crumb } from '/vendor/infrajs/controller/src/Crumb.js'
 import { Form } from '/vendor/akiyatkin/form/Form.js'
 
 
 UTM.init()
-
 
 Form.before('submit', async form => {
 	const input = document.createElement('INPUT')
