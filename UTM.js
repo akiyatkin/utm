@@ -1,29 +1,26 @@
-
-const UTM = {
-	view: async (referrer, href) => {
-		time = new Date().getTime()
-		UTM.val = { time, referrer, href, goals: []}
-		return UTM.update(UTM.val)
+const UTM = {	
+	init: async () => {
+		const referrer = document.referrer
+		if (!referrer) return
+		const ref = new URL(referrer)
+		if (ref.host == location.host) return
+		const time = Math.round(new Date().getTime() / 1000)
+		const href = location.href
+		return UTM.update({ time, referrer, href })
 	},
-	goal: (goal, data) => {
-		goal = { time: new Date().getTime(), goal, data }
-		UTM.val.goals.push(goal)
-		return UTM.update(UTM.val)
-	}
 	get: async () => UTM.read().then(store => {
 		const request = store.getAll()
 		return new Promise((resolve, reject) => {
-			request.onsuccess = event => resolve(event.target.result ? event.target.result.val : def)
+			request.onsuccess = event => resolve(request.result)
 			request.onerror = reject
-		})	
+		})
 	}).catch(() => null),
-
-	update: (val) => Ses.edit().then(store => {
-		const request = store.put(UTM.val)
+	update: (val) => UTM.edit().then(store => {
+		const request = store.put(val)
 		return new Promise((resolve, reject) => {
 			request.onsuccess = event => resolve(true)
 			request.onerror = reject
-		})	
+		})
 	}).catch(() => null),
 	db: () => {
 		if (UTM.db.promise) return UTM.db.promise;
@@ -34,12 +31,12 @@ const UTM = {
 				reject()
 			}
 			request.onsuccess = event => {
-				const db = event.target.result
+				const db = request.result
 				db.onerror = event => console.log("UTM Database error: " + event.target.errorCode)
 				resolve(db)
 			}
 			request.onupgradeneeded  = event => {
-				const db = event.target.result
+				const db = request.result
 				if (!db.objectStoreNames.contains('data')) {
 					db.createObjectStore('data', { 
 						keyPath: ["time"] 
@@ -63,9 +60,6 @@ const UTM = {
 			request.onerror = reject
 		})
 	}).catch(() => null)
-	
-
-	
 }
 
 export { UTM }

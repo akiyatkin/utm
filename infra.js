@@ -1,14 +1,16 @@
 import { UTM } from '/vendor/akiyatkin/utm/UTM.js'
-import { Crumb } from '/vendor/infrajs/controller/Crumb.js'
-import { Goal } from '/vendor/akiyatkin/goal/Goal.js'
+import { Crumb } from '/vendor/infrajs/controller/src/Crumb.js'
+import { Form } from '/vendor/akiyatkin/form/Form.js'
 
 
-let last = document.referrer
-Crumb.done('change', () => {
-	UTM.view(last, location.href)
-	last = location.href
-})
+UTM.init()
 
-Goal.done('reach', goal => {
-	UTM.goal(goal)
+
+Form.before('submit', async form => {
+	const input = document.createElement('INPUT')
+	input.type = 'hidden'
+	input.name = 'utms'
+	const res = await UTM.get()
+	input.value = JSON.stringify(res)
+	form.append(input)
 })
