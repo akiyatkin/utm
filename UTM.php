@@ -15,8 +15,12 @@ class UTM {
 				unset($utms[$k]);
 				continue;
 			}
-			$utms[$k]['hrefpath'] = $r['path'];
-			$utms[$k]['hrefquery'] = $r['query'];
+			if (isset($r['path'])) {
+				$utms[$k]['hrefpath'] = $r['path'];
+			}
+			if (isset($r['query'])) {
+				$utms[$k]['hrefquery'] = $r['query'];
+			}
 		}
 		foreach ($utms as $k => $utm) {
 			if (empty($utm['referrer'])) {
