@@ -1,3 +1,6 @@
 {
-	"name":"akiyatkin/utm"
+	"name":"akiyatkin/utm",
+	"autoload": {
+		"psr-4": { "akiyatkin\\utm\\": "" }
+	}
 }
